@@ -1,5 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Article } from '../articles.module';
 
 @Component({
   selector: 'app-article-item',
@@ -10,6 +11,7 @@ import { CommonModule } from '@angular/common';
 })
 export class ArticleItemComponent implements OnInit {
   @Input() article: Article = {
+    articleID: 0,
     name: '',
     imageUrl: '',
     price: 0,
@@ -17,23 +19,20 @@ export class ArticleItemComponent implements OnInit {
     quantityInCart: 0,
   };
 
+  @Output() quantityChange = new EventEmitter<{
+    article: Article;
+    changeInQuantity: number;
+  }>();
+
   constructor() {}
 
   ngOnInit(): void {}
 
-  addQuantity(): void {
-    this.article.quantityInCart++;
+  onAddQuantity(): void {
+    this.quantityChange.emit({ article: this.article, changeInQuantity: 1 });
   }
-  removeQuantity(): void {
-    if (this.article.quantityInCart > 0) {
-      this.article.quantityInCart--;
-    }
+
+  onRemoveQuantity(): void {
+    this.quantityChange.emit({ article: this.article, changeInQuantity: -1 });
   }
 }
-type Article = {
-  name: string;
-  imageUrl: string;
-  price: number;
-  isOnSale: boolean;
-  quantityInCart: number;
-};

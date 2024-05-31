@@ -1,39 +1,47 @@
 import { Injectable } from '@angular/core';
+import { Observable, of } from 'rxjs';
+import { ArticleList, Article } from './articles.module';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ArticleService {
-  articles: Article[] = Array.from({ length: 9 }, (_, i) => ({
-    name: `Artículo ${i + 1}`,
-    imageUrl: `https://picsum.photos/seed/${i + 1}/200`,
-    price: +(Math.random() * 49 + 1).toFixed(2),
-    quantityInCart: 0,
-    isOnSale: Math.random() < 0.5,
-  }));
+  private articles: Article[] = [];
 
-  addQuantity(article: Article): void {
-    article.quantityInCart++;
+  constructor() {
+    this.getArticles().subscribe((articles) => (this.articles = articles));
   }
 
-  onQuantityChange(event: ArticleQuantityChange): void {
-    const article = this.articles.find((a) => a === event.article);
-    if (article) {
-      article.quantityInCart += event.change;
+  getArticles(): Observable<Article[]> {
+    let localArticles = JSON.parse(localStorage.getItem('articles') || '[]');
+    console.log(localArticles);
+    if (localArticles.length > 0) {
+      // Si ya hay artículos en localStorage, devuélvelos
+      return of(localArticles);
+    } else {
+      // Si no hay artículos en localStorage, guarda ArticleList en localStorage
+      localStorage.setItem('articles', JSON.stringify(ArticleList));
+      localArticles = ArticleList;
+      return of(localArticles);
     }
   }
-}
 
-export type Article = {
-  name: string;
-  imageUrl: string;
-  price: number;
-  isOnSale: boolean;
-  quantityInCart: number;
-};
+  changeQuantity(
+    articleID: number,
+    changeInQuantity: number
+  ): Observable<Article> {
+    let article = this.articles.find((a) => a.articleID === articleID);
+    if (article) {
+      article.quantityInCart += changeInQuantity;
+    } else {
+      throw new Error('Article not found');
+    }
+    return of(article);
+  }
 
-export interface ArticleQuantityChange {
-  article: Article;
-  change: number;
+  create(article: Article): Observable<Article> {
+    this.articles.push(article);
+    localStorage.setItem('articles', JSON.stringify(this.articles));
+    return of(article);
+  }
 }
-// ng generate service article-service

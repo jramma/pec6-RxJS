@@ -22,12 +22,12 @@
       alt="Imagen del articulo"
     />
   </div>
-  <div
+  <!-- <div
     *ngIf="article.isOnSale"
     class="flex flex-row p-6 justify-between items-center"
   >
     <button
-      (click)="addQuantity()"
+      (click)="onAddQuantity()"
       class="w-1/4 relative font-bold bg-gray-300 text-blue-300"
     >
       +1
@@ -36,12 +36,12 @@
       class="w-1/4 relative font-bold bg-gray-300"
       [class.text-red-300]="article.quantityInCart > 0"
       [class.text-gray-600]="article.quantityInCart === 0"
-      (click)="removeQuantity()"
+      (click)="onRemoveQuantity()"
       [disabled]="article.quantityInCart === 0"
     >
       -1
     </button>
-  </div>
+  </div> -->
 </section>
 <!-- type Article = {
   name: string;

@@ -9,7 +9,7 @@
 
       <div *ngIf="article.isOnSale" class="flex flex-row justify-between p-4">
         <button
-          (click)="onQuantityChange({ article: article, change: 1 })"
+          (click)="onQuantityChange({ article: article, changeInQuantity: 1 })"
           class="w-1/4 relative font-bold border border-blue-300 text-blue-300"
         >
           +1
@@ -20,7 +20,7 @@
           [class.text-gray-600]="article.quantityInCart === 0"
           [class.border-red-300]="article.quantityInCart > 0"
           [class.border-gray-600]="article.quantityInCart === 0"
-          (click)="onQuantityChange({ article: article, change: -1 })"
+          (click)="onQuantityChange({ article: article, changeInQuantity: -1 })"
           [disabled]="article.quantityInCart === 0"
         >
           -1

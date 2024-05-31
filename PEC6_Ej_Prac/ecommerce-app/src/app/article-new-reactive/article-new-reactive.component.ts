@@ -1,5 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { ArticleService } from '../article-service.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
 import {
   FormBuilder,
   ReactiveFormsModule,
@@ -16,22 +19,38 @@ import {
   styleUrl: './article-new-reactive.component.css',
 })
 export class ArticleNewReactiveComponent {
-  article: FormGroup;
+  article: FormGroup = this.fb.group({});
   submitted = false;
   formError: string | null = null;
 
-  constructor(private fb: FormBuilder) {
-    this.article = this.fb.group({
-      name: [
-        '',
-        [Validators.required, Validators.minLength(3), NameArticleValidator],
-      ],
-      price: ['', [Validators.required, Validators.min(0.1)]],
-      imageUrl: [
-        '',
-        [Validators.required, Validators.pattern('(https?://.*.(?:png|jpg))')],
-      ],
-      isOnSale: [false],
+  constructor(
+    private fb: FormBuilder,
+    private articleService: ArticleService,
+    private snackBar: MatSnackBar
+  ) {
+    this.articleService.getArticles().subscribe((articles) => {
+      let newArticleID: number;
+      do {
+        newArticleID = Math.floor(Math.random() * 1000000); // Genera un ID aleatorio
+      } while (articles.find((a) => a.articleID === newArticleID)); // Continúa generando hasta que obtengas un ID único
+
+      this.article = this.fb.group({
+        articleID: newArticleID,
+        name: [
+          '',
+          [Validators.required, Validators.minLength(3), NameArticleValidator],
+        ],
+        price: ['', [Validators.required, Validators.min(0.1)]],
+        imageUrl: [
+          '',
+          [
+            Validators.required,
+            Validators.pattern('(https?://.*.(?:png|jpg))'),
+          ],
+        ],
+        isOnSale: [false],
+        quantityInCart: [1],
+      });
     });
   }
 
@@ -52,6 +71,10 @@ export class ArticleNewReactiveComponent {
     if (this.article.valid) {
       console.log(this.article.value);
       this.formError = null;
+      this.articleService.create(this.article.value);
+      this.snackBar.open('Artículo creado', 'Cerrar', {
+        duration: 2000,
+      });
     } else {
       if (this.name && this.name.errors && this.name.errors['forbiddenName']) {
         this.formError =

@@ -1,9 +1,8 @@
-import { Component } from '@angular/core';
-import { ArticleItemComponent } from '../article-item2/article-item.component';
+import { Component, OnInit } from '@angular/core';
+import { ArticleItemComponent } from '../article-item/article-item.component';
 import { CommonModule } from '@angular/common';
-import { ArticleService, Article, ArticleQuantityChange} from '../article-service.service';
-
-
+import { Article } from '../articles.module';
+import { ArticleService } from '../article-service.service';
 @Component({
   selector: 'app-article-list',
   standalone: true,
@@ -11,16 +10,58 @@ import { ArticleService, Article, ArticleQuantityChange} from '../article-servic
   templateUrl: './article-list.component.html',
   styleUrl: './article-list.component.css',
 })
-export class ArticleListComponent {
+export class ArticleListComponent implements OnInit {
+  articles: Article[] = [];
+
   constructor(private articleService: ArticleService) {}
 
-  addQuantity(article: Article): void {
-    this.articleService.addQuantity(article);
+  ngOnInit() {
+    this.articleService.getArticles().subscribe((articles) => {
+      this.articles = articles;
+    });
+  }
+  onAddQuantity(article: Article): void {
+    this.articleService
+      .changeQuantity(article.articleID, 1)
+      .subscribe((newArticle) => {
+        const index = this.articles.findIndex(
+          (a) => a.articleID === newArticle.articleID
+        );
+        if (index !== -1) {
+          this.articles[index] = newArticle;
+        }
+      });
   }
 
-  onQuantityChange(event: ArticleQuantityChange): void {
-    this.articleService.onQuantityChange(event);
+  onRemoveQuantity(article: Article): void {
+    this.articleService
+      .changeQuantity(article.articleID, -1)
+      .subscribe((newArticle) => {
+        const index = this.articles.findIndex(
+          (a) => a.articleID === newArticle.articleID
+        );
+        if (index !== -1) {
+          this.articles[index] = newArticle;
+        }
+      });
   }
 
+  onQuantityChange(quantityChange: {
+    article: Article;
+    changeInQuantity: number;
+  }): void {
+    this.articleService
+      .changeQuantity(
+        quantityChange.article.articleID,
+        quantityChange.changeInQuantity
+      )
+      .subscribe((newArticle) => {
+        const index = this.articles.findIndex(
+          (a) => a.articleID === newArticle.articleID
+        );
+        if (index !== -1) {
+          this.articles[index] = newArticle;
+        }
+      });
+  }
 }
-
