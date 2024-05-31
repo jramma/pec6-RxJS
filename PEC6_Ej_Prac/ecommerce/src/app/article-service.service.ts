@@ -13,13 +13,15 @@ export class ArticleService {
   }
 
   getArticles(): Observable<Article[]> {
-    const localArticles = JSON.parse(localStorage.getItem('articles') || '[]');
+    let localArticles = JSON.parse(localStorage.getItem('articles') || '[]');
     console.log(localArticles);
     if (localArticles.length > 0) {
       // Si ya hay artículos en localStorage, devuélvelos
       return of(localArticles);
     } else {
-      localArticles.set(ArticleList);
+      // Si no hay artículos en localStorage, guarda ArticleList en localStorage
+      localStorage.setItem('articles', JSON.stringify(ArticleList));
+      localArticles = ArticleList;
       return of(localArticles);
     }
   }
