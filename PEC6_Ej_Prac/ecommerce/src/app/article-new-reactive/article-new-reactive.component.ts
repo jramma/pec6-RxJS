@@ -1,6 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { ArticleService } from '../article-service.service';
+import {
+  ArticleService,
+  NameArticleValidator,
+} from '../article-service.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import {
@@ -8,7 +11,6 @@ import {
   ReactiveFormsModule,
   FormGroup,
   Validators,
-  AbstractControl,
 } from '@angular/forms';
 
 @Component({
@@ -28,12 +30,7 @@ export class ArticleNewReactiveComponent {
     private articleService: ArticleService,
     private snackBar: MatSnackBar
   ) {
-    this.articleService.getArticles().subscribe((articles) => {
-      let newArticleID: number;
-      do {
-        newArticleID = Math.floor(Math.random() * 1000000); // Genera un ID aleatorio
-      } while (articles.find((a) => a.articleID === newArticleID)); // Continúa generando hasta que obtengas un ID único
-
+    this.articleService.generateArticleId().subscribe((newArticleID) => {
       this.article = this.fb.group({
         articleID: newArticleID,
         name: [
@@ -49,7 +46,7 @@ export class ArticleNewReactiveComponent {
           ],
         ],
         isOnSale: [false],
-        quantityInCart: [1],
+        quantityInCart: [0],
       });
     });
   }
@@ -84,11 +81,4 @@ export class ArticleNewReactiveComponent {
       }
     }
   }
-}
-export function NameArticleValidator(
-  control: AbstractControl
-): { [key: string]: any } | null {
-  const forbiddenNames = ['Prueba', 'Test', 'Mock', 'Fake'];
-  const isForbiddenName = forbiddenNames.includes(control.value);
-  return isForbiddenName ? { forbiddenName: { value: control.value } } : null;
 }

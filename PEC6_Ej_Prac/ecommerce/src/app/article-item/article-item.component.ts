@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Article } from '../articles.module';
-
 @Component({
   selector: 'app-article-item',
   standalone: true,

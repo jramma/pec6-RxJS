@@ -4,8 +4,6 @@ import { CommonModule } from '@angular/common';
 import { Article } from '../articles.module';
 import { ArticleService } from '../article-service.service';
 
-
-
 @Component({
   selector: 'app-article-list',
   standalone: true,
