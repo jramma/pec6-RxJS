@@ -1,6 +1,7 @@
 # Preguntas
 
 1. ¿Qué son los interceptores?
+   
    Los interceptores en Angular son una forma de procesar las solicitudes HTTP antes de que sean enviadas al servidor o después de que las respuestas son recibidas. Son útiles para una variedad de tareas, como la manipulación de errores, la adición de cabeceras HTTP, el registro de solicitudes y respuestas, y la implementación de la lógica de autenticación.
 
    Aquí tienes un ejemplo básico de un interceptor en Angular:
@@ -48,7 +49,7 @@
 2. Analiza la siguiente cadena de operadores de RxJS, explica cada uno de los
    pasos que se están desarrollando y explica en qué caso usarías este código:
 
-   ```
+   ```typescript
    this.wines$ = this.searchSubject
    .startWith(this.searchTerm)
    .debounceTime(300)

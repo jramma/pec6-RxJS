@@ -1,62 +1,38 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { AbstractControl } from '@angular/forms';
-import { ArticleList, Article } from './articles.module';
+import { Article } from './articles.module';
 import { map } from 'rxjs/operators';
-import { BehaviorSubject } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+
 @Injectable({
   providedIn: 'root',
 })
 export class ArticleService {
-  private articles: Article[] = [];
-  private articles$ = new BehaviorSubject<Article[]>(this.articles);
+  private apiUrl = 'http://localhost:3000/api/articles';
 
-  constructor() {
-    this.getArticles().subscribe((articles) => (this.articles = articles));
+  constructor(private http: HttpClient) {}
+
+  getArticles(query?: string): Observable<Article[]> {
+    const url = query ? `${this.apiUrl}?q=${query}` : this.apiUrl;
+    return this.http.get<Article[]>(url);
   }
 
-  getArticles(): Observable<Article[]> {
-    let localArticles = JSON.parse(localStorage.getItem('articles') || '[]');
-    console.log(localArticles);
-    if (localArticles.length > 0) {
-      // Si ya hay artículos en localStorage, devuélvelos
-      return of(localArticles);
-    } else {
-      // Si no hay artículos en localStorage, guarda ArticleList en localStorage
-      localStorage.setItem('articles', JSON.stringify(ArticleList));
-      localArticles = ArticleList;
-      return of(localArticles);
-    }
+  create(article: Article): Observable<Article> {
+    return this.http.post<Article>(this.apiUrl, article);
   }
 
   changeQuantity(
     articleID: number,
     changeInQuantity: number
   ): Observable<Article> {
-    let article = this.articles.find((a) => a.articleID === articleID);
-    if (article) {
-      article.quantityInCart += changeInQuantity;
-    } else {
-      throw new Error('Article not found');
-    }
-    return of(article);
-  }
-  create(article: Article): Observable<Article> {
-    this.articles.push(article);
-    localStorage.setItem('articles', JSON.stringify(this.articles));
-    return of(article);
+    const url = `${this.apiUrl}/${articleID}`;
+    return this.http.patch<Article>(url, { changeInQuantity });
   }
 
-  updateArticle(newArticle: Article): void {
-    const index = this.articles.findIndex(a => a.articleID === newArticle.articleID);
-    if (index !== -1) {
-      this.articles[index] = newArticle;
-      this.articles$.next(this.articles); // Emite un nuevo valor
-    }
-  }
-
-  getArticlesObservable(): Observable<Article[]> {
-    return this.articles$.asObservable();
+  updateArticle(newArticle: Article): Observable<Article> {
+    const url = `${this.apiUrl}/${newArticle.articleID}`;
+    return this.http.put<Article>(url, newArticle);
   }
 
   generateArticleId(): Observable<number> {
