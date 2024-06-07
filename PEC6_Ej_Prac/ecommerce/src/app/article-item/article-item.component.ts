@@ -1,10 +1,11 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Article } from '../articles.module';
+import { DefaultImagePipe } from '../pipes/default-image.pipe';
 @Component({
   selector: 'app-article-item',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, DefaultImagePipe],
   templateUrl: './article-item.component.html',
   styleUrl: './article-item.component.css',
 })
