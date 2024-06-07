@@ -1,16 +1,13 @@
-<section class="text-white flex flex-col gap-6 p-2 cursor-pointer">
+<section class="text-white flex flex-col gap-6 p-2 cursor-pointer max-w-72">
   <div class="flex justify-between">
     <div class="w-1/2">
       <h2>{{ article.name }}</h2>
-      <p class="text-sm" [ngClass]="{ 'text-gray-600': !article.isOnSale }">
-        Precio: {{ article.price }} €
+      <p class="text-lg" [ngClass]="{ 'text-gray-300': !article.isOnSale }">
+        Precio: {{ article.price | currency : "EUR" : "symbol" : "1.2-2" }}
       </p>
       <div class="flex items-center gap-4">
-        <img
-          class="w-[45%] rounded-3xl object-cover"
-          [src]="article.imageUrl | defaultImage"
-          alt="Imagen del articulo"
-        />
+        <img class="h-6 text-white dark:text-black" src="assets/shop.svg" />
+
         <p>{{ article.quantityInCart }}</p>
       </div>
       <p class="text-sm font-bold text-green-300" *ngIf="article.isOnSale">
@@ -21,8 +18,8 @@
       </p>
     </div>
     <img
-      class="w-[45%] rounded-3xl object-cover"
-      [src]="article.imageUrl"
+      class="w-[45%] rounded-xl object-cover"
+      [src]="article.imageUrl | defaultImage"
       alt="Imagen del articulo"
     />
   </div>

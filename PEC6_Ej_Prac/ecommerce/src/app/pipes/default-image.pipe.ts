@@ -6,9 +6,10 @@ import { Pipe, PipeTransform } from '@angular/core';
   pure: true,
 })
 export class DefaultImagePipe implements PipeTransform {
-
-  transform(value: string, defaultImage: string = '/assets/images/img.jpg'): string {
+  transform(
+    value: string,
+    defaultImage: string = '/assets/images/img.jpg'
+  ): string {
     return value ? value : defaultImage;
   }
-
 }
