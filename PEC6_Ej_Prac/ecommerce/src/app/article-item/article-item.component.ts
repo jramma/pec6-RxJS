@@ -10,7 +10,7 @@ import { Article } from '../articles.module';
 })
 export class ArticleItemComponent implements OnInit {
   @Input() article: Article = {
-    articleID: 0,
+    id: 0,
     name: '',
     imageUrl: '',
     price: 0,

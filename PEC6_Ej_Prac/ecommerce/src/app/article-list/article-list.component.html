@@ -1,4 +1,10 @@
 <section class="flex flex-col gap-6 border border-red-300 p-6">
+  <input
+    class="w-80 h-12 rounded-lg border border-gray-300 p-2 text-black"
+    [(ngModel)]="searchTerm"
+    (input)="onSearch()"
+    placeholder="Buscar artículos"
+  />
   <h2 class="text-3xl">Article_list</h2>
   <div class="flex flex-wrap gap-6">
     <div *ngFor="let article of articles">

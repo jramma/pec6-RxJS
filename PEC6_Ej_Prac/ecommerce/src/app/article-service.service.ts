@@ -14,6 +14,7 @@ export class ArticleService {
   constructor(private http: HttpClient) {}
 
   getArticles(query?: string): Observable<Article[]> {
+    console.log(query)
     const url = query ? `${this.apiUrl}?q=${query}` : this.apiUrl;
     return this.http.get<Article[]>(url);
   }
@@ -31,7 +32,7 @@ export class ArticleService {
   }
 
   updateArticle(newArticle: Article): Observable<Article> {
-    const url = `${this.apiUrl}/${newArticle.articleID}`;
+    const url = `${this.apiUrl}/${newArticle.id}`;
     return this.http.put<Article>(url, newArticle);
   }
 
@@ -41,7 +42,7 @@ export class ArticleService {
         let newArticleID: number;
         do {
           newArticleID = Math.floor(Math.random() * 1000000); // Generate a random ID
-        } while (articles.find((a: Article) => a.articleID === newArticleID)); // Continue generating until you get a unique ID
+        } while (articles.find((a: Article) => a.id === newArticleID)); // Continue generating until you get a unique ID
         return newArticleID;
       })
     );
